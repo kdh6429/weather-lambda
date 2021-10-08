@@ -1,7 +1,7 @@
 'use strict';
 // import weatherUtil from './module/weather_util';
 // import commonUtil from './module/common_util';
-
+// commit test
 const weatherUtil = require('./module/weather_util');
 const commonUtil = require('./module/common_util');
 const config = require('./config');

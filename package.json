@@ -1,0 +1,16 @@
+{
+  "name": "weather-accuracy-lamdba",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Donghun Kim <kdh6429@yahoo.co.kr>",
+  "license": "MIT",
+  "type": "commonjs",
+  "dependencies": {
+    "axios": "^0.21.4"
+  },
+  "devDependencies": {
+    "serverless-local-schedule": "^0.1.6",
+    "serverless-offline": "^8.1.0",
+    "serverless-offline-scheduler": "^0.5.0"
+  }
+}

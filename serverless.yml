@@ -1,0 +1,132 @@
+# Welcome to serverless. Read the docs
+# https://serverless.com/framework/docs/
+
+# Serverless.yml is the configuration the CLI
+# uses to deploy your code to your provider of choice
+
+#  region: us-east-1
+
+# The `service` block is the name of the service
+service: weather-accuracy-lamdba
+
+frameworkVersion: '2'
+
+# The `provider` block defines where your service will be deployed
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: ap-northeast-2
+  timeout: 240
+  stage: dev # Default stage to be used. Default is "dev"
+
+plugins:
+  - serverless-offline
+  #- serverless-local-schedule
+functions:
+  vilageFcstSetBatch:
+    handler: shortWeather.vilageFcstBatch
+    timeout: 600
+    events:
+      - schedule: 
+          rate: cron(17 2,5,8,11,14,17,20,23 * * ? *) 
+          #timezone: Asia/Seoul 
+          enabled: true
+      # - http:
+      #     path: vilageFcstBatch
+      #     method: get
+      #     cors: true
+
+  ultraSrtNcstBatch:
+    handler: shortWeather.ultraSrtNcstBatch
+    events:
+      - schedule: 
+          rate: cron(43 * * * ? *) 
+          #timezone: Asia/Seoul 
+          enabled: true
+      # - http:
+      #     path: ultraSrtNcstBatch
+      #     method: get
+      #     cors: true
+
+  ultraSrtFcstBatch:
+    handler: shortWeather.ultraSrtFcstBatch
+    events:
+      - schedule: 
+          rate: cron(47 * * * ? *) 
+          #timezone: Asia/Seoul 
+          enabled: true
+      # - http:
+      #     path: ultraSrtFcstBatch
+      #     method: get
+      #     cors: true
+
+  midTaBatch:
+    handler: shortWeather.midTaBatch
+    events:
+      - schedule: 
+          rate: cron(10 9,21 * * ? *) # 9 -> 18, 21 -> 6
+          #timezone: Asia/Seoul 
+          enabled: true
+      # - http:
+      #     path: midTaBatch
+      #     method: get
+      #     cors: true
+
+  midLandFcstBatch:
+    handler: shortWeather.midLandFcstBatch
+    events:
+      - schedule: 
+          rate: cron(10 9,21 * * ? *) # 9 -> 18, 21 -> 6
+          #timezone: Asia/Seoul 
+          enabled: true
+      # - http:
+      #     path: midLandFcstBatch
+      #     method: get
+      #     cors: true
+
+  gen1HourStats:
+    handler: weatherStats.gen1HourStats
+    timeout: 600
+    events:
+      - schedule: 
+          rate: cron(50 * * * ? *) 
+          #timezone: Asia/Seoul 
+          enabled: true
+      # - http:
+      #     path: gen1HourStats
+      #     method: get
+      #     cors: true
+
+  gen3HourStats:
+    handler: weatherStats.gen3HourStats
+    timeout: 600
+    events:
+      - schedule: 
+          rate: cron(53 0,3,6,9,12,15,18,21 * * ? *) 
+          #timezone: Asia/Seoul 
+          enabled: true
+      # - http:
+      #     path: gen3HourStats
+      #     method: get
+      #     cors: true
+
+  # genStats:
+  #   handler: weatherStats.dailyStats
+  #   timeout: 600
+  #   events:
+  #     - schedule: 
+  #         rate: cron(0 2 * * ? *) 
+  #         timezone: Asia/Seoul 
+  #         enabled: true
+  #     - http:
+  #         path: dailyStats
+  #         method: get
+  #         cors: true
+
+  helloWorld:
+    handler: handler.helloWorld
+    events:
+      - http:
+          path: hello-world
+          method: get
+          cors: true

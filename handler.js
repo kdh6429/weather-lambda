@@ -1,4 +1,5 @@
-'use strict';
+
+const commonUtil = require('./module/common_util');
 
 module.exports.helloWorld = (event, context, callback) => {
   const response = {
@@ -11,6 +12,9 @@ module.exports.helloWorld = (event, context, callback) => {
       input: event,
     }),
   };
-  console.log("[console.log] response '" + response);
-  callback(null, response);
+
+  commonUtil.sendtoSlack(response).then( () => {
+    console.log("[console.log] response '" + response);
+    callback(null, response);
+  });
 };

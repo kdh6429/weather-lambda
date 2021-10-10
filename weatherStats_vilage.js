@@ -209,10 +209,14 @@ module.exports.getDocs  = async(event, map_info) => new Promise((resolve, reject
                 if (fWeather.VEC && curWeathers.some(c=> c && 'VEC' in c)) {
                     const vec = Math.max.apply(null, curWeathers.map( c => {
                         if ('VEC' in c) {
+                            // return Math.min(
+                            //     Math.abs(Math.abs(fWeather.VEC) - Math.abs(c.VEC)),
+                            //     Math.abs(Math.abs(fWeather.VEC - 360) - Math.abs(c.VEC)),
+                            //     Math.abs(Math.abs(fWeather.VEC) - Math.abs(c.VEC - 360)),
+                            // );
                             return Math.min(
-                                Math.abs(Math.abs(fWeather.VEC) - Math.abs(c.VEC)),
-                                Math.abs(Math.abs(fWeather.VEC - 360) - Math.abs(c.VEC)),
-                                Math.abs(Math.abs(fWeather.VEC) - Math.abs(c.VEC - 360)),
+                                Math.abs(fWeather.VEC - c.VEC),
+                                Math.abs(c.VEC - fWeather.VEC),
                             );
                         }
                         return 0;

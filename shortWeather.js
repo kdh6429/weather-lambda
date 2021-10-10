@@ -102,6 +102,9 @@ module.exports.midLandFcstBatch = (event, context, callback) => {
 const imrpotData = (tableName, docs, callback) => {
     commonUtil.importData( tableName, docs).then( count => {
         console.log("upload ", count, " docs");
-        callback(null, response("upload " + count + " docs"));
+
+        commonUtil.sendtoSlack(tableName + ":" + count).then( () => {
+            callback(null, response(tableName + ":" + count));
+        });
     });
 }

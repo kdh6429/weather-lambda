@@ -118,9 +118,8 @@ module.exports.getDocs = async(event, map_info) => new Promise((resolve, reject)
                 if (fWeather.VEC && curWeather.VEC) {
                     const vec = (() => {
                         return Math.min(
-                            Math.abs(Math.abs(fWeather.VEC) - Math.abs(curWeather.VEC)),
-                            Math.abs(Math.abs(fWeather.VEC - 360) - Math.abs(curWeather.VEC)),
-                            Math.abs(Math.abs(fWeather.VEC) - Math.abs(curWeather.VEC - 360)),
+                            Math.abs(fWeather.VEC - curWeather.VEC),
+                            Math.abs(curWeather.VEC - fWeather.VEC),
                         );
                     })(); 
                     Object.assign( resultDoc[objectKey], {

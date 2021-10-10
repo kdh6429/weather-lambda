@@ -50,7 +50,11 @@ module.exports.gen1HourStats = (event, context, callback) => {
     
     Promise.all(statsDocsPromises).then( result => {
         console.log( "result", result);
-        callback(null, response("done" + result));
+        const resultCount = result.reduce((a, b)=> a+b, 0);
+        
+        commonUtil.sendtoSlack("gen1HourStats : " + resultCount).then( () => {
+            callback(null, response("gen1HourStats : " + resultCount));
+        });
     }).catch(err=>{
         console.error( "err", err);
         callback(null, response("err" + err));
@@ -79,7 +83,12 @@ module.exports.gen3HourStats = (event, context, callback) => {
     
     Promise.all(statsDocsPromises).then( result => {
         console.log( "result", result);
-        callback(null, response("done" + result));
+        const resultCount = result.reduce((a, b)=> a+b, 0);
+        
+        commonUtil.sendtoSlack("gen3HourStats : " + resultCount).then( () => {
+            callback(null, response("gen3HourStats : " + resultCount));
+        });
+
     }).catch(err=>{
         console.error( "err", err);
         callback(null, response("err" + err));

@@ -6,7 +6,8 @@
   "license": "MIT",
   "type": "commonjs",
   "dependencies": {
-    "axios": "^0.21.4"
+    "axios": "^0.21.4",
+    "slack-node": "^0.1.8"
   },
   "devDependencies": {
     "serverless-local-schedule": "^0.1.6",

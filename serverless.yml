@@ -123,10 +123,10 @@ functions:
   #         method: get
   #         cors: true
 
-  helloWorld:
-    handler: handler.helloWorld
-    events:
-      - http:
-          path: hello-world
-          method: get
-          cors: true
+  # helloWorld:
+  #   handler: handler.helloWorld
+  #   events:
+  #     - http:
+  #         path: hello-world
+  #         method: get
+  #         cors: true

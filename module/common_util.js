@@ -5,6 +5,10 @@ const config = require('../config');
 AWS.config.update(config.aws_remote_config);
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
+let Slack = require('slack-node'); 
+let webhookUri = "https://hooks.slack.com/services/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"; 
+let slack = new Slack(); 
+
 // vilageFcst
 function delay(interval) {
     return new Promise(resolve => setTimeout(resolve, interval));
@@ -153,6 +157,13 @@ module.exports = {
     isEmpty(object) {
         return Object.keys(object).length === 0;
     },
+    convertYMDHtoDate:(YMD, hour) => {
+        var year = YMD.substring(0,4);
+        var month = YMD.substring(4,6);
+        var date = YMD.substring(6,8);
+        const rtnDate = new Date(Number(year), Number(month)-1, Number(date), Number(hour));
+        return rtnDate;
+    },
     getHourDiff:(fromYMD, fromHour, curYMD, curHour) => {
         var fYear = fromYMD.substring(0,4);
         var fMonth = fromYMD.substring(4,6);
@@ -224,5 +235,30 @@ module.exports = {
     },
     removeMissValue:(obj) => {
         return _removeMissValue(obj)
-    }
+    },
+    addHistoryByTime:(arr, item) => {
+        // if same item in arr
+        
+
+        // add item to arr
+        arr.push(item);
+
+        // sort by time value
+        arr.sort((a, b) => a.time - b.time);
+
+        return arr;
+    },
+    sendtoSlack: async(message) => new Promise((resolve, reject) => {
+        slack.setWebhook(webhookUri); 
+        slack.webhook( { 
+            "text": message.toString(), 
+        }, (err, response) => { 
+            if (err) { 
+                resolve(response);
+                console.log(response) 
+            } else { 
+                resolve(response);
+            } 
+        }); 
+    })
 }

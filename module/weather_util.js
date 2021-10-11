@@ -76,6 +76,30 @@ module.exports = {
     
 }
 
+function delay(interval) {
+    return new Promise(resolve => setTimeout(resolve, interval));
+}
+
+const getDataFromUrl = (path) => new Promise((resolve, reject) => {
+    axiosInstance.get(path)
+        .then(function (response) {
+            resolve(response.data);
+        }) .catch(function (error) { 
+            console.log("[axios retry]", error);
+            // retry 1 again
+            const sec = Math.random() * (10 - 5) + 5;
+            delay(sec * 1000).then(() => {
+                axiosInstance.get(path)
+                .then(function (response) {
+                    resolve(response.data);
+                }) .catch(function (error) { 
+                    reject(error)
+                }) .then(function () { 
+                });
+            });
+        });
+});
+
 const _getUltraSrtFcst = (date, time, nx, ny) => new Promise((resolve, reject) => {
     var path = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst";
     path += "?base_date=" + date;
@@ -87,13 +111,13 @@ const _getUltraSrtFcst = (date, time, nx, ny) => new Promise((resolve, reject) =
     
     console.log( "path" , path);
     
-    axiosInstance.get(path)
+    getDataFromUrl(path)
         .then(function (response) {
-            resolve(response.data);
+            resolve(response);
         }) .catch(function (error) { 
             reject(error)
         }) .then(function () { 
-        });    
+        });
 })
 
 
@@ -109,9 +133,9 @@ const _getUltraSrtNcst = (date, time, nx, ny) => new Promise((resolve, reject) =
     
     console.log( "path" , path);
     
-   axiosInstance.get(path)
+    getDataFromUrl(path)
         .then(function (response) {
-            resolve(response.data);
+            resolve(response);
         }) .catch(function (error) { 
             reject(error)
         }) .then(function () { 
@@ -136,9 +160,9 @@ const _getVilageFcst = (date, time, nx, ny) => new Promise((resolve, reject) => 
     
     console.log( "path" , path);
     
-    axiosInstance.get(path)
+    getDataFromUrl(path)
         .then(function (response) {
-            resolve(response.data);
+            resolve(response);
         }) .catch(function (error) { 
             reject(error)
         }) .then(function () { 
@@ -163,9 +187,9 @@ const _getMidTa = (date, time, regId) => new Promise((resolve, reject) => {
     
     console.log( "path" , path);
     
-    axiosInstance.get(path)
+    getDataFromUrl(path)
         .then(function (response) {
-            resolve(response.data);
+            resolve(response);
         }) .catch(function (error) { 
             reject(error)
         }) .then(function () { 
@@ -191,9 +215,9 @@ const _getMidLandFcst = (date, time, regId) => new Promise((resolve, reject) => 
 
     console.log( "path" , path);
 
-    axiosInstance.get(path)
+    getDataFromUrl(path)
         .then(function (response) {
-            resolve(response.data);
+            resolve(response);
         }) .catch(function (error) { 
             reject(error)
         }) .then(function () { 

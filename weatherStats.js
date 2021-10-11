@@ -52,8 +52,8 @@ module.exports.gen1HourStats = (event, context, callback) => {
         console.log( "result", result);
         const resultCount = result.reduce((a, b)=> a+b, 0);
         
-        commonUtil.sendtoSlack("gen1HourStats : " + resultCount).then( () => {
-            callback(null, response("gen1HourStats : " + resultCount));
+        commonUtil.sendtoSlack("weather-hourly-stats gen1HourStats : " + resultCount).then( () => {
+            callback(null, response("weather-hourly-stats gen1HourStats : " + resultCount));
         });
     }).catch(err=>{
         console.error( "err", err);
@@ -85,8 +85,8 @@ module.exports.gen3HourStats = (event, context, callback) => {
         console.log( "result", result);
         const resultCount = result.reduce((a, b)=> a+b, 0);
         
-        commonUtil.sendtoSlack("gen3HourStats : " + resultCount).then( () => {
-            callback(null, response("gen3HourStats : " + resultCount));
+        commonUtil.sendtoSlack("weather-hourly-stats gen3HourStats : " + resultCount).then( () => {
+            callback(null, response("weather-hourly-stats gen3HourStats : " + resultCount));
         });
 
     }).catch(err=>{

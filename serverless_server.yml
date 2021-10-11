@@ -16,7 +16,7 @@ provider:
   name: aws
   runtime: nodejs12.x
   region: ap-northeast-2
-    timeout: 600
+  timeout: 240
   stage: dev # Default stage to be used. Default is "dev"
 
 plugins:
@@ -25,6 +25,7 @@ plugins:
 functions:
   vilageFcstSetBatch:
     handler: shortWeather.vilageFcstBatch
+    timeout: 600
     events:
       - schedule: 
           rate: cron(17 2,5,8,11,14,17,20,23 * * ? *) 
@@ -65,6 +66,7 @@ functions:
 
   gen1HourStats:
     handler: weatherStats.gen1HourStats
+    timeout: 600
     events:
       - schedule: 
           rate: cron(50 * * * ? *) 
@@ -73,6 +75,7 @@ functions:
 
   gen3HourStats:
     handler: weatherStats.gen3HourStats
+    timeout: 600
     events:
       - schedule: 
           rate: cron(53 0,3,6,9,12,15,18,21 * * ? *) 

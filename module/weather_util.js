@@ -5,6 +5,10 @@ const commonUtil = require('./common_util');
 const SHORT_API_KEY = "LGm8psNdGFktTrxPchiklRQh/8Veo6mmeCrsYMIz11gKiPZSnzT2qvt7EgKxNwHlsKMsQFtuuqKr8vHhkD9YJQ==";
 const MID_API_KEY = "LGm8psNdGFktTrxPchiklRQh/8Veo6mmeCrsYMIz11gKiPZSnzT2qvt7EgKxNwHlsKMsQFtuuqKr8vHhkD9YJQ==";
 
+const axiosInstance = axios.create({
+    timeout: 90000
+});
+
 module.exports = {
     getVilageFcst: (date, time, nx, ny) => new Promise((resolve, reject) => {
         _getVilageFcst(date, time, nx, ny).then(data => {
@@ -83,7 +87,7 @@ const _getUltraSrtFcst = (date, time, nx, ny) => new Promise((resolve, reject) =
     
     console.log( "path" , path);
     
-    axios.get(path)
+    axiosInstance.get(path)
         .then(function (response) {
             resolve(response.data);
         }) .catch(function (error) { 
@@ -105,7 +109,7 @@ const _getUltraSrtNcst = (date, time, nx, ny) => new Promise((resolve, reject) =
     
     console.log( "path" , path);
     
-    axios.get(path)
+   axiosInstance.get(path)
         .then(function (response) {
             resolve(response.data);
         }) .catch(function (error) { 
@@ -132,7 +136,7 @@ const _getVilageFcst = (date, time, nx, ny) => new Promise((resolve, reject) => 
     
     console.log( "path" , path);
     
-    axios.get(path)
+    axiosInstance.get(path)
         .then(function (response) {
             resolve(response.data);
         }) .catch(function (error) { 
@@ -159,7 +163,7 @@ const _getMidTa = (date, time, regId) => new Promise((resolve, reject) => {
     
     console.log( "path" , path);
     
-    axios.get(path)
+    axiosInstance.get(path)
         .then(function (response) {
             resolve(response.data);
         }) .catch(function (error) { 
@@ -187,7 +191,7 @@ const _getMidLandFcst = (date, time, regId) => new Promise((resolve, reject) => 
 
     console.log( "path" , path);
 
-    axios.get(path)
+    axiosInstance.get(path)
         .then(function (response) {
             resolve(response.data);
         }) .catch(function (error) { 

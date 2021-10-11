@@ -22,8 +22,9 @@ module.exports.ultraSrtFcstBatch = (event, context, callback) => {
     const {yyyymmdd, hour} = commonUtil.getDateTime(event);
     const getDataPromises = config.map_infos.map(map_info => weatherUtil.getUltraSrtFcst(yyyymmdd, hour+"30", map_info.x, map_info.y));
 
-    Promise.all(getDataPromises).then( datas=> {
-        const docs = datas.flat();
+    Promise.allSettled(getDataPromises).then( datas=> {
+        console.log("datas", datas);
+        const docs = datas.filter( d=> d.status === 'fulfilled').map( d=> d.value).flat();
         imrpotData("ultraSrtFcst", docs, callback);
     });
 };
@@ -32,8 +33,9 @@ module.exports.ultraSrtNcstBatch = (event, context, callback) => {
     const {yyyymmdd, hour} = commonUtil.getDateTime(event);
     const getDataPromises = config.map_infos.map(map_info => weatherUtil.getUltraSrtNcst(yyyymmdd, hour+"00", map_info.x, map_info.y));
 
-    Promise.all(getDataPromises).then( datas=> {
-        const docs = datas.flat();
+    Promise.allSettled(getDataPromises).then( datas=> {
+        console.log("datas", datas);
+        const docs = datas.filter( d=> d.status === 'fulfilled').map( d=> d.value).flat();
         imrpotData("ultraSrtNcst", docs, callback);
     });
 };
@@ -43,8 +45,9 @@ module.exports.vilageFcstBatch = (event, context, callback) => {
     const {yyyymmdd, hour} = commonUtil.getDateTime(event);
     const getDataPromises = config.map_infos.map(map_info => weatherUtil.getVilageFcst(yyyymmdd, hour+"00", map_info.x, map_info.y));
     
-    Promise.all(getDataPromises).then( datas=> {
-        const docs = datas.flat();
+    Promise.allSettled(getDataPromises).then( datas=> {
+        console.log("datas", datas);
+        const docs = datas.filter( d=> d.status === 'fulfilled').map( d=> d.value).flat();
         imrpotData("vilageFcst", docs, callback);
     });
 };
@@ -53,8 +56,9 @@ module.exports.midTaBatch = (event, context, callback) => {
     const {yyyymmdd, hour} = commonUtil.getDateTime(event);
     const getDataPromises = config.map_infos.map(map_info => weatherUtil.getMidTa(yyyymmdd, hour+"00", map_info.midTa));
 
-    Promise.all(getDataPromises).then( datas=> {
-        const docs = datas.flat();
+    Promise.allSettled(getDataPromises).then( datas=> {
+        console.log("datas", datas);
+        const docs = datas.filter( d=> d.status === 'fulfilled').map( d=> d.value).flat();
         imrpotData("midTa", docs, callback);
     });
 };
@@ -63,8 +67,9 @@ module.exports.midLandFcstBatch = (event, context, callback) => {
     const {yyyymmdd, hour} = commonUtil.getDateTime(event);
     const getDataPromises = config.map_infos.map(map_info => weatherUtil.getMidLandFcst(yyyymmdd, hour+"00", map_info.midLand));
 
-    Promise.all(getDataPromises).then( datas=> {
-        const docs = datas.flat();
+    Promise.allSettled(getDataPromises).then( datas=> {
+        console.log("datas", datas);
+        const docs = datas.filter( d=> d.status === 'fulfilled').map( d=> d.value).flat();
         imrpotData("midLandFcst", docs, callback);
     });
 };

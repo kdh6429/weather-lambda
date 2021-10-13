@@ -48,6 +48,7 @@ module.exports.vilageFcstBatch = (event, context, callback) => {
     Promise.allSettled(getDataPromises).then( datas=> {
         console.log("datas", datas);
         const docs = datas.filter( d=> d.status === 'fulfilled').map( d=> d.value).flat();
+        console.log("docs", docs);
         imrpotData("vilageFcst", docs, callback);
     });
 };
@@ -73,36 +74,6 @@ module.exports.midLandFcstBatch = (event, context, callback) => {
         imrpotData("midLandFcst", docs, callback);
     });
 };
-
-// const getDateTime = (event) => {
-//     var today = new Date();
-//     var hour = 99;
-
-//     if(event.queryStringParameters && !isNaN(event.queryStringParameters.hour)) {
-//         hour = +event.queryStringParameters.hour;
-//     }
-//     else {
-//         today.setHours(today.getHours() + 9);
-//         hour = today.getHours();
-//     }
-
-//     var dd = today.getDate();
-//     var mm = today.getMonth()+1;
-//     var yyyy = today.getFullYear();
-//     var minutes = today.getMinutes();
-  
-//     if(hour<10) {
-//         hour='0'+hour;
-//     }
-//     if(mm<10) {
-//         mm='0'+mm;
-//     }
-//     if(dd<10) {
-//         dd='0'+dd;
-//     } 
-//     const yyyymmdd = yyyy + "" + mm + "" + dd;
-//     return {yyyymmdd, hour}
-// }
 
 const imrpotData = (tableName, docs, callback) => {
     commonUtil.importData( tableName, docs).then( count => {

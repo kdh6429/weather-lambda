@@ -12,6 +12,7 @@ const axiosInstance = axios.create({
 module.exports = {
     getVilageFcst: (date, time, nx, ny) => new Promise((resolve, reject) => {
         _getVilageFcst(date, time, nx, ny).then(data => {
+            console.log( data);
             if( !data.response || !data.response.header || data.response.header.resultCode !== "00") {
                 reject("[ERROR] No Header or Result Code is not '00'", data);
             }
@@ -24,6 +25,7 @@ module.exports = {
     }),
     getUltraSrtNcst: (date, time, nx, ny) => new Promise((resolve, reject) => {
         _getUltraSrtNcst(date, time, nx, ny).then(data => {
+            console.log( data);
             if( data.response.header.resultCode !== "00") {
                 reject("[ERROR] Result Code is not '00'", data);
             }
@@ -36,6 +38,7 @@ module.exports = {
     }),
     getUltraSrtFcst: (date, time, nx, ny) => new Promise((resolve, reject) => {
         _getUltraSrtFcst(date, time, nx, ny).then(data => {
+            console.log( data);
             if( data.response.header.resultCode !== "00") {
                 reject("[ERROR] Result Code is not '00'", data);
             }
@@ -83,11 +86,27 @@ function delay(interval) {
 const getDataFromUrl = (path) => new Promise((resolve, reject) => {
     axiosInstance.get(path)
         .then(function (response) {
-            resolve(response.data);
+            if( response.data.response && response.data.response.header) {
+                resolve(response.data);
+            }
+            else {
+                console.log("[axios retry1]", error);
+                // retry 1 again
+                const sec = Math.random() * (5 - 1) + 1;
+                delay(sec * 1000).then(() => {
+                    axiosInstance.get(path)
+                    .then(function (response) {
+                        resolve(response.data);
+                    }) .catch(function (error) { 
+                        reject(error)
+                    }) .then(function () { 
+                    });
+                });
+            }
         }) .catch(function (error) { 
-            console.log("[axios retry]", error);
+            console.log("[axios retry2]", error);
             // retry 1 again
-            const sec = Math.random() * (10 - 5) + 5;
+            const sec = Math.random() * (5 - 1) + 1;
             delay(sec * 1000).then(() => {
                 axiosInstance.get(path)
                 .then(function (response) {

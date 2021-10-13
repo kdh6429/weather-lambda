@@ -31,8 +31,7 @@ module.exports.gen1HourStats = (event, context, callback) => {
     const statsDocsPromises = config.map_infos.map( (map_info, index) => new Promise((resolve, reject) => {
         try {
             console.log( "map_info", map_info);
-            delay(index * 3000).then(() => {
-                console.log( "delay 3000");
+            delay(index * 2000).then(() => {
                 weatherStatsUltra.getDocs(event, map_info).then(doc => {
                     console.log( "created doc", doc);
                     doc["id"] = "1hourly-" + yyyymmdd + "." + hour + "00." + map_info.x + "." + map_info.y;
@@ -65,7 +64,7 @@ module.exports.gen3HourStats = (event, context, callback) => {
     const {yyyymmdd, hour} = commonUtil.getDateTime(event);
     const statsDocsPromises = config.map_infos.map( (map_info, index) => new Promise((resolve, reject) => {
         try {
-            delay(index * 3000).then(() => {
+            delay(index * 2000).then(() => {
                 weatherStatsVilage.getDocs(event, map_info).then(doc => {
                     console.log( "created doc", doc);
                     doc["id"] = "3hourly-" + yyyymmdd + "." + hour + "00." + map_info.x + "." + map_info.y;

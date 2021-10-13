@@ -197,7 +197,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/weather-accuracy-lamdba/dev/1634088247598-2021-10-13T01:24:07.598Z/weather-accuracy-lamdba.zip"
+          "S3Key": "serverless/weather-accuracy-lamdba/dev/1634127243033-2021-10-13T12:14:03.033Z/weather-accuracy-lamdba.zip"
         },
         "Handler": "shortWeather.vilageFcstBatch",
         "Runtime": "nodejs12.x",
@@ -222,7 +222,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/weather-accuracy-lamdba/dev/1634088247598-2021-10-13T01:24:07.598Z/weather-accuracy-lamdba.zip"
+          "S3Key": "serverless/weather-accuracy-lamdba/dev/1634127243033-2021-10-13T12:14:03.033Z/weather-accuracy-lamdba.zip"
         },
         "Handler": "shortWeather.ultraSrtNcstBatch",
         "Runtime": "nodejs12.x",
@@ -247,7 +247,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/weather-accuracy-lamdba/dev/1634088247598-2021-10-13T01:24:07.598Z/weather-accuracy-lamdba.zip"
+          "S3Key": "serverless/weather-accuracy-lamdba/dev/1634127243033-2021-10-13T12:14:03.033Z/weather-accuracy-lamdba.zip"
         },
         "Handler": "shortWeather.ultraSrtFcstBatch",
         "Runtime": "nodejs12.x",
@@ -272,7 +272,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/weather-accuracy-lamdba/dev/1634088247598-2021-10-13T01:24:07.598Z/weather-accuracy-lamdba.zip"
+          "S3Key": "serverless/weather-accuracy-lamdba/dev/1634127243033-2021-10-13T12:14:03.033Z/weather-accuracy-lamdba.zip"
         },
         "Handler": "shortWeather.midTaBatch",
         "Runtime": "nodejs12.x",
@@ -297,7 +297,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/weather-accuracy-lamdba/dev/1634088247598-2021-10-13T01:24:07.598Z/weather-accuracy-lamdba.zip"
+          "S3Key": "serverless/weather-accuracy-lamdba/dev/1634127243033-2021-10-13T12:14:03.033Z/weather-accuracy-lamdba.zip"
         },
         "Handler": "shortWeather.midLandFcstBatch",
         "Runtime": "nodejs12.x",
@@ -322,7 +322,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/weather-accuracy-lamdba/dev/1634088247598-2021-10-13T01:24:07.598Z/weather-accuracy-lamdba.zip"
+          "S3Key": "serverless/weather-accuracy-lamdba/dev/1634127243033-2021-10-13T12:14:03.033Z/weather-accuracy-lamdba.zip"
         },
         "Handler": "weatherStats.gen1HourStats",
         "Runtime": "nodejs12.x",
@@ -347,7 +347,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/weather-accuracy-lamdba/dev/1634088247598-2021-10-13T01:24:07.598Z/weather-accuracy-lamdba.zip"
+          "S3Key": "serverless/weather-accuracy-lamdba/dev/1634127243033-2021-10-13T12:14:03.033Z/weather-accuracy-lamdba.zip"
         },
         "Handler": "weatherStats.gen3HourStats",
         "Runtime": "nodejs12.x",
@@ -365,74 +365,74 @@
         "Gen3HourStatsLogGroup"
       ]
     },
-    "VilageFcstSetBatchLambdaVersionH4OAIj0c2zuV9OPWmn3Ygn3vHUstIamwv6MfcCZaro": {
+    "VilageFcstSetBatchLambdaVersionh2moEF7GpqBEwwAJLXAuZCRFGdoroPm2HfyBk21A0": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "VilageFcstSetBatchLambdaFunction"
         },
-        "CodeSha256": "8t8MZsqIkdT8fmILNz1EoltMSMM4pkPwycN6KZ89glI="
+        "CodeSha256": "gmng2aIHvwx8OiKwCLO+oZx4VRb/91oERj4xuGe1Mts="
       }
     },
-    "UltraSrtFcstBatchLambdaVersion2BxhgcupoyGR37olkgM4lxKasr2Nsz8FhMtYInPpQE": {
-      "Type": "AWS::Lambda::Version",
-      "DeletionPolicy": "Retain",
-      "Properties": {
-        "FunctionName": {
-          "Ref": "UltraSrtFcstBatchLambdaFunction"
-        },
-        "CodeSha256": "8t8MZsqIkdT8fmILNz1EoltMSMM4pkPwycN6KZ89glI="
-      }
-    },
-    "UltraSrtNcstBatchLambdaVersion50xlTDZwQuEgFhMkK7at1xzZ8rtYlGv3eTB8kkbKk": {
+    "UltraSrtNcstBatchLambdaVersionsDSSj9HooEdxG4v9BUOcTFDN347mv6QyraIDqSpw": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "UltraSrtNcstBatchLambdaFunction"
         },
-        "CodeSha256": "8t8MZsqIkdT8fmILNz1EoltMSMM4pkPwycN6KZ89glI="
+        "CodeSha256": "gmng2aIHvwx8OiKwCLO+oZx4VRb/91oERj4xuGe1Mts="
       }
     },
-    "MidLandFcstBatchLambdaVersionE8McXb1GveHxErCgWK1mH6EV54xjCH5FXEZiUkOhT10": {
-      "Type": "AWS::Lambda::Version",
-      "DeletionPolicy": "Retain",
-      "Properties": {
-        "FunctionName": {
-          "Ref": "MidLandFcstBatchLambdaFunction"
-        },
-        "CodeSha256": "8t8MZsqIkdT8fmILNz1EoltMSMM4pkPwycN6KZ89glI="
-      }
-    },
-    "MidTaBatchLambdaVersionSioqWSCfdL3CyWijp81erltorloBYZTEflLpyXgqz90": {
+    "MidTaBatchLambdaVersiony5nIOvhWvJw5Zhc6S6JywZlwkZxuhrAqpXSSJgJNVw": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "MidTaBatchLambdaFunction"
         },
-        "CodeSha256": "8t8MZsqIkdT8fmILNz1EoltMSMM4pkPwycN6KZ89glI="
+        "CodeSha256": "gmng2aIHvwx8OiKwCLO+oZx4VRb/91oERj4xuGe1Mts="
       }
     },
-    "Gen1HourStatsLambdaVersionmjC3eaHowdQhhIPQUCNlA9PvIxgS6zm9Lm6CSxErQ": {
+    "UltraSrtFcstBatchLambdaVersion2AARf3CXmFpFXuvjVFQxdu4blMG1iN0X7C2El86DfJ8": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "UltraSrtFcstBatchLambdaFunction"
+        },
+        "CodeSha256": "gmng2aIHvwx8OiKwCLO+oZx4VRb/91oERj4xuGe1Mts="
+      }
+    },
+    "MidLandFcstBatchLambdaVersionG3fi1IJvVN6N8CwnpoXhtRK9vMJYb2WuO6rION1nX4": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "MidLandFcstBatchLambdaFunction"
+        },
+        "CodeSha256": "gmng2aIHvwx8OiKwCLO+oZx4VRb/91oERj4xuGe1Mts="
+      }
+    },
+    "Gen1HourStatsLambdaVersionOd5tVEdJ67QkMNPHU40IZqVifOAujGHY43hDa7hE2Q": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "Gen1HourStatsLambdaFunction"
         },
-        "CodeSha256": "8t8MZsqIkdT8fmILNz1EoltMSMM4pkPwycN6KZ89glI="
+        "CodeSha256": "gmng2aIHvwx8OiKwCLO+oZx4VRb/91oERj4xuGe1Mts="
       }
     },
-    "Gen3HourStatsLambdaVersionEXvokT6FtNApLwAkr0RCElMf0tZEswgKGzkyfpjkaA": {
+    "Gen3HourStatsLambdaVersionzh6rSAJ0kfxUQf8YAGa6cyXqgfA7cnu2gTlVLNH6mE": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "Gen3HourStatsLambdaFunction"
         },
-        "CodeSha256": "8t8MZsqIkdT8fmILNz1EoltMSMM4pkPwycN6KZ89glI="
+        "CodeSha256": "gmng2aIHvwx8OiKwCLO+oZx4VRb/91oERj4xuGe1Mts="
       }
     },
     "VilageFcstSetBatchEventsRuleSchedule1": {
@@ -660,7 +660,7 @@
     "Gen3HourStatsEventsRuleSchedule1": {
       "Type": "AWS::Events::Rule",
       "Properties": {
-        "ScheduleExpression": "cron(57 0,3,6,9,12,15,18,21 * * ? *)",
+        "ScheduleExpression": "cron(55 0,3,6,9,12,15,18,21 * * ? *)",
         "State": "ENABLED",
         "Targets": [
           {
@@ -707,52 +707,52 @@
     "VilageFcstSetBatchLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "VilageFcstSetBatchLambdaVersionH4OAIj0c2zuV9OPWmn3Ygn3vHUstIamwv6MfcCZaro"
+        "Ref": "VilageFcstSetBatchLambdaVersionh2moEF7GpqBEwwAJLXAuZCRFGdoroPm2HfyBk21A0"
       },
       "Export": {
         "Name": "sls-weather-accuracy-lamdba-dev-VilageFcstSetBatchLambdaFunctionQualifiedArn"
       }
     },
-    "UltraSrtFcstBatchLambdaFunctionQualifiedArn": {
-      "Description": "Current Lambda function version",
-      "Value": {
-        "Ref": "UltraSrtFcstBatchLambdaVersion2BxhgcupoyGR37olkgM4lxKasr2Nsz8FhMtYInPpQE"
-      },
-      "Export": {
-        "Name": "sls-weather-accuracy-lamdba-dev-UltraSrtFcstBatchLambdaFunctionQualifiedArn"
-      }
-    },
     "UltraSrtNcstBatchLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "UltraSrtNcstBatchLambdaVersion50xlTDZwQuEgFhMkK7at1xzZ8rtYlGv3eTB8kkbKk"
+        "Ref": "UltraSrtNcstBatchLambdaVersionsDSSj9HooEdxG4v9BUOcTFDN347mv6QyraIDqSpw"
       },
       "Export": {
         "Name": "sls-weather-accuracy-lamdba-dev-UltraSrtNcstBatchLambdaFunctionQualifiedArn"
       }
     },
-    "MidLandFcstBatchLambdaFunctionQualifiedArn": {
-      "Description": "Current Lambda function version",
-      "Value": {
-        "Ref": "MidLandFcstBatchLambdaVersionE8McXb1GveHxErCgWK1mH6EV54xjCH5FXEZiUkOhT10"
-      },
-      "Export": {
-        "Name": "sls-weather-accuracy-lamdba-dev-MidLandFcstBatchLambdaFunctionQualifiedArn"
-      }
-    },
     "MidTaBatchLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "MidTaBatchLambdaVersionSioqWSCfdL3CyWijp81erltorloBYZTEflLpyXgqz90"
+        "Ref": "MidTaBatchLambdaVersiony5nIOvhWvJw5Zhc6S6JywZlwkZxuhrAqpXSSJgJNVw"
       },
       "Export": {
         "Name": "sls-weather-accuracy-lamdba-dev-MidTaBatchLambdaFunctionQualifiedArn"
       }
     },
+    "UltraSrtFcstBatchLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "UltraSrtFcstBatchLambdaVersion2AARf3CXmFpFXuvjVFQxdu4blMG1iN0X7C2El86DfJ8"
+      },
+      "Export": {
+        "Name": "sls-weather-accuracy-lamdba-dev-UltraSrtFcstBatchLambdaFunctionQualifiedArn"
+      }
+    },
+    "MidLandFcstBatchLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "MidLandFcstBatchLambdaVersionG3fi1IJvVN6N8CwnpoXhtRK9vMJYb2WuO6rION1nX4"
+      },
+      "Export": {
+        "Name": "sls-weather-accuracy-lamdba-dev-MidLandFcstBatchLambdaFunctionQualifiedArn"
+      }
+    },
     "Gen1HourStatsLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "Gen1HourStatsLambdaVersionmjC3eaHowdQhhIPQUCNlA9PvIxgS6zm9Lm6CSxErQ"
+        "Ref": "Gen1HourStatsLambdaVersionOd5tVEdJ67QkMNPHU40IZqVifOAujGHY43hDa7hE2Q"
       },
       "Export": {
         "Name": "sls-weather-accuracy-lamdba-dev-Gen1HourStatsLambdaFunctionQualifiedArn"
@@ -761,7 +761,7 @@
     "Gen3HourStatsLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "Gen3HourStatsLambdaVersionEXvokT6FtNApLwAkr0RCElMf0tZEswgKGzkyfpjkaA"
+        "Ref": "Gen3HourStatsLambdaVersionzh6rSAJ0kfxUQf8YAGa6cyXqgfA7cnu2gTlVLNH6mE"
       },
       "Export": {
         "Name": "sls-weather-accuracy-lamdba-dev-Gen3HourStatsLambdaFunctionQualifiedArn"

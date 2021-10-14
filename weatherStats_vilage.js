@@ -41,7 +41,7 @@ const commonUtil = require('./module/common_util');
 // }
 
 const getVilageStatsHistoryTimes = (event) => {
-    let tmpDay = commonUtil.getDate(event, -1); // 기준 시간
+    let tmpDay = commonUtil.getDate(event, -2); // 기준 시간
 
     var dateTimes = [];
     var fromTmpDay = new Date( tmpDay.getTime() - (48*60*60*1000));
@@ -54,14 +54,14 @@ const getVilageStatsHistoryTimes = (event) => {
 }
 
 module.exports.getDocs  = async(event, map_info) => new Promise((resolve, reject) => {
-    const {yyyymmdd, hour} = commonUtil.getDateTime(event, -1);
-    const dateTimes = getVilageStatsHistoryTimes(event);
+    const {yyyymmdd, hour} = commonUtil.getDateTime(event, -2);
+    const dateTimes = getVilageStatsHistoryTimes(event, -1);
     
 
     const curWeatherKeys = [
-        commonUtil.getYMDandHour( commonUtil.getDate(event, 0)),
         commonUtil.getYMDandHour( commonUtil.getDate(event, -1)),
         commonUtil.getYMDandHour( commonUtil.getDate(event, -2)),
+        commonUtil.getYMDandHour( commonUtil.getDate(event, -3)),
     ];
     console.log( "curWeatherKeys", curWeatherKeys);
     const curWeatherPromises = curWeatherKeys.map( tmpYMDH => {

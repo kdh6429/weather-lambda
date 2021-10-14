@@ -90,9 +90,9 @@ const getDataFromUrl = (path) => new Promise((resolve, reject) => {
                 resolve(response.data);
             }
             else {
-                console.log("[axios retry1]", error);
+                console.log("[axios retry1]", response.data);
                 // retry 1 again
-                const sec = Math.random() * (5 - 1) + 1;
+                const sec = Math.random() * (10 - 3) + 3;
                 delay(sec * 1000).then(() => {
                     axiosInstance.get(path)
                     .then(function (response) {
@@ -106,7 +106,7 @@ const getDataFromUrl = (path) => new Promise((resolve, reject) => {
         }) .catch(function (error) { 
             console.log("[axios retry2]", error);
             // retry 1 again
-            const sec = Math.random() * (5 - 1) + 1;
+            const sec = Math.random() * (10 - 3) + 3;
             delay(sec * 1000).then(() => {
                 axiosInstance.get(path)
                 .then(function (response) {

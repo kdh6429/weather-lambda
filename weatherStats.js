@@ -61,7 +61,7 @@ module.exports.gen1HourStats = (event, context, callback) => {
 };
 
 module.exports.gen3HourStats = (event, context, callback) => {
-    const {yyyymmdd, hour} = commonUtil.getDateTime(event);
+    const {yyyymmdd, hour} = commonUtil.getDateTime(event, -1);
     const statsDocsPromises = config.map_infos.map( (map_info, index) => new Promise((resolve, reject) => {
         try {
             delay(index * 2000).then(() => {

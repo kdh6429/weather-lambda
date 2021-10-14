@@ -69,7 +69,7 @@ functions:
     timeout: 600
     events:
       - schedule: 
-          rate: cron(53 * * * ? *) 
+          rate: cron(55 * * * ? *) 
           #timezone: Asia/Seoul 
           enabled: true
 
@@ -78,6 +78,6 @@ functions:
     timeout: 600
     events:
       - schedule: 
-          rate: cron(53 0,3,6,9,12,15,18,21 * * ? *) 
+          rate: cron(1 0,3,6,9,12,15,18,21 * * ? *) 
           #timezone: Asia/Seoul 
           enabled: true

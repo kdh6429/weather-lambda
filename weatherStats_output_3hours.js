@@ -19,18 +19,10 @@ const response = (message) => {
 function delay(interval) {
     return new Promise(resolve => setTimeout(resolve, interval));
 }
-module.exports.test = (event, context, callback) => {
-    [config.map_infos[0]].map( (map_info, index)=> {
-        const docId = "lastest-" + map_info.id;
-        commonUtil.getFromS3(docId + ".json").then( data => {
-            callback(null, response("data" + data));
-        });
-    });
-};
 
 // 모든 정보가 생성된 이후에 시도해야 함 ( +1 hour : 02 )
 module.exports.output = (event, context, callback) => {
-    //const {yyyymmdd, hour} = commonUtil.getDateTime(event, -1);
+    const {yyyymmdd, hour} = commonUtil.getDateTime(event, -1);
     const statsDocsPromises = config.map_infos.map( (map_info, index) => new Promise((resolve, reject) => {
         try {
             delay(index * 3000).then(() => {
@@ -38,7 +30,7 @@ module.exports.output = (event, context, callback) => {
                 const docId = "lastest-" + map_info.id;
                 commonUtil.getFromS3(docId + ".json").then(localDoc => {
                 //commonUtil.getData("weather-output", docId).then(localDoc => {
-                    get1hourlyDoc(event, map_info, localDoc).then(doc => {
+                    get3hourlyDoc(event, map_info, localDoc).then(doc => {
                         doc["id"] = docId;
                         doc["local"] = map_info.id;
                         doc["update"] = new Date().getTime();
@@ -57,20 +49,20 @@ module.exports.output = (event, context, callback) => {
     
     Promise.allSettled(statsDocsPromises).then( datas => {
         const docs = datas.filter( d=> d.status === 'fulfilled').map( d=> d.value).flat();
-        commonUtil.sendtoSlack("Update weather-output 1hourly : " + docs.length).then( () => {
+        commonUtil.sendtoSlack("Update weather-output 3hourly : " + docs.length).then( () => {
             if( docs.length === 0) {
                 callback(null, response("no data to update"));
                 return ;
             }
             commonUtil.getFromS3("lastest.json").then(totalDoc => {
-            //commonUtil.getData("weather-output", "lastest").then(totalDoc => {
-                get1hourlyTotalDoc(event, docs, totalDoc).then(doc => {
+                get3hourlyTotalDoc(event, docs, totalDoc).then(doc => {
                     // total doc
                     doc["id"] = "lastest";
                     doc["update"] = new Date().getTime();
+                    
                     commonUtil.uploadToS3("lastest.json", doc).then( data => {
                     //importData("weather-output", [doc]).then( count => {
-                        commonUtil.sendtoSlack("Update weather-output 1hourly : lastest").then( () => {
+                        commonUtil.sendtoSlack("Update weather-output 3hourly: lastest").then( () => {
                             callback(null, response(" weather-output done"));
                         });
                     });
@@ -82,14 +74,24 @@ module.exports.output = (event, context, callback) => {
         callback(null, response("err" + err));
     });
 };
-const get1hourlyTotalDoc = async(event, docs, totalDoc) => new Promise((resolve, reject) => {
+const get3hourlyTotalDoc = async(event, docs, totalDoc) => new Promise((resolve, reject) => {
     const {yyyymmdd, hour} = commonUtil.getDateTime(event, -1);
-    const timeKeys = ['u1', 'u2', 'u3', 'u4', 'u5', 'u6'];
+    const timeKeys = ['v6','v9','v12','v15','v18','v21','v24','v36','v48'];
     for(const index in timeKeys) {
         const timeKey = timeKeys[index];
         if( !(timeKey in totalDoc)) {
             totalDoc[timeKey] = {
                 'pty' : {'avg' : -1, 'info': {}}, // 날씨
+                'pop_0'  :  {'avg' : -1, 'info': {}},
+                'pop_10' :  {'avg' : -1, 'info': {}},
+                'pop_20' :  {'avg' : -1, 'info': {}},
+                'pop_30' :  {'avg' : -1, 'info': {}},
+                'pop_40' :  {'avg' : -1, 'info': {}},
+                'pop_50' :  {'avg' : -1, 'info': {}},
+                'pop_60' :  {'avg' : -1, 'info': {}},
+                'pop_70' :  {'avg' : -1, 'info': {}},
+                'pop_80' :  {'avg' : -1, 'info': {}},
+                'pop_90' :  {'avg' : -1, 'info': {}},// 강수 확률 
                 'reh' : {'history' : [],'avg' : 0, 'info': {}}, // 습도 
                 'vec' : {'history' : [],'avg' : 0, 'info': {}}, // 풍향
                 't1h' : {'history' : [],'avg' : 0, 'info': {}}, // 온도
@@ -99,7 +101,6 @@ const get1hourlyTotalDoc = async(event, docs, totalDoc) => new Promise((resolve,
                 'stmp_s' : {'history' : [],'avg' : 0, 'info': {}}, // 체감온도 여름
             }
         }
-
         const infoKeys1 = [
             'reh','vec','t1h','rn1','wsd','stmp_w','stmp_s'
         ];
@@ -122,7 +123,9 @@ const get1hourlyTotalDoc = async(event, docs, totalDoc) => new Promise((resolve,
             }, LOCAL_HISTORY_LENGTH);
         }
 
-        const infoKeys2 = ['pty'];
+        const infoKeys2 = [
+            'pty', 'pop_0', 'pop_10', 'pop_20', 'pop_30', 'pop_40', 'pop_50', 'pop_60', 'pop_70', 'pop_80', 'pop_90', 
+        ];
         for(const infoIndex in infoKeys2) {
             const infoKey = infoKeys2[infoIndex];
         
@@ -144,10 +147,9 @@ const get1hourlyTotalDoc = async(event, docs, totalDoc) => new Promise((resolve,
         resolve(totalDoc);
     }
 });
-const get1hourlyDoc = async(event, map_info,  localDoc) => new Promise((resolve, reject) => {
+const get3hourlyDoc = async(event, map_info,  localDoc) => new Promise((resolve, reject) => {
     const {yyyymmdd, hour} = commonUtil.getDateTime(event, -1);
-
-    const hourlyStatsKey = "1hourly-" + yyyymmdd + "." + hour + "00." + map_info.x + "." + map_info.y;
+    const hourlyStatsKey = "3hourly-" + yyyymmdd + "." + hour + "00." + map_info.x + "." + map_info.y;
 
     commonUtil.getData("weather-hourly-stats", hourlyStatsKey).then(rtnData => {
         if (commonUtil.isEmpty(rtnData.Item)) {
@@ -156,29 +158,40 @@ const get1hourlyDoc = async(event, map_info,  localDoc) => new Promise((resolve,
             return ;
         }
         const hourlyStats = rtnData.Item;
-        const timeKeys = ['u1', 'u2', 'u3', 'u4', 'u5', 'u6'];
+        //const timeKeys = ['v6','v9','v12','v15','v18','v21','v24','v27','v30','v33','v36','v39','v42','v45','v48'];
+        const timeKeys = ['v6','v9','v12','v15','v18','v21','v24','v36','v48'];
         for(const index in timeKeys) {
             const timeKey = timeKeys[index];
             if (! (timeKey in hourlyStats)) continue;
             if( !(timeKey in localDoc)) {
                 localDoc[timeKey] = {
-                    'pty' : {'raw':[], 'history' : [],'rate' : -1}, // 날씨
-                    'reh' : {'raw':[], 'history' : [],'avg' : 0}, // 습도 
-                    'vec' : {'raw':[], 'history' : [],'avg' : 0}, // 풍향
-                    't1h' : {'raw':[], 'history' : [],'avg' : 0}, // 온도
-                    'rn1' : {'raw':[], 'history' : [],'avg' : 0}, // 강수량
-                    'wsd' : {'raw':[], 'history' : [],'avg' : 0}, // 풍량
+                    'pty' : {'raw':[], 'history' : [], 'rate' : -1}, // 날씨
+                    'pop_0'  : { 'raw':[], 'history' : [], 'rate' : -1 },
+                    'pop_10' : { 'raw':[], 'history' : [], 'rate' : -1 },
+                    'pop_20' : { 'raw':[], 'history' : [], 'rate' : -1 },
+                    'pop_30' : { 'raw':[], 'history' : [], 'rate' : -1 },
+                    'pop_40' : { 'raw':[], 'history' : [], 'rate' : -1 },
+                    'pop_50' : { 'raw':[], 'history' : [], 'rate' : -1 },
+                    'pop_60' : { 'raw':[], 'history' : [], 'rate' : -1 },
+                    'pop_70' : { 'raw':[], 'history' : [], 'rate' : -1 },
+                    'pop_80' : { 'raw':[], 'history' : [], 'rate' : -1 },
+                    'pop_90' : { 'raw':[], 'history' : [], 'rate' : -1 },// 강수 확률 
+                    'reh' : {'raw':[], 'history' : [], 'avg' : 0}, // 습도 
+                    'vec' : {'raw':[], 'history' : [], 'avg' : 0}, // 풍향
+                    't1h' : {'raw':[], 'history' : [], 'avg' : 0}, // 온도
+                    'rn1' : {'raw':[], 'history' : [], 'avg' : 0}, // 강수량
+                    'wsd' : {'raw':[], 'history' : [], 'avg' : 0}, // 풍량
                     'stmp_w' : {'raw':[], 'history' : [],'avg' : 0}, // 체감온도 겨울
                     'stmp_s' : {'raw':[], 'history' : [],'avg' : 0}, // 체감온도 여름
                 }
             }
             if('pty' in hourlyStats[timeKey] && 'pty_d' in hourlyStats[timeKey] && 
-                (hourlyStats[timeKey]['pty_d']['e'] !== '0' || hourlyStats[timeKey]['pty_d']['a']!== '0')) {
+                (hourlyStats[timeKey]['pty_d']['e'] !== '0' || hourlyStats[timeKey]['pty_d']['a'].some(c => c && c !== '0'))) {
                 const tmpObj = {
                     't' : commonUtil.convertYMDHtoDate(yyyymmdd, hour).getTime(),
                     'e' : hourlyStats[timeKey]['pty_d']['e'],
                     'a' : hourlyStats[timeKey]['pty_d']['a'],
-                    'f': hourlyStats[timeKey]['pty_d']['e']===hourlyStats[timeKey]['pty_d']['a']
+                    'f': hourlyStats[timeKey]['pty'] === 'T'
                 };
                 localDoc[timeKey]['pty']['raw'] = commonUtil.addItemByTime(localDoc[timeKey]['pty']['raw'], tmpObj, LOCAL_HISTORY_LENGTH);
                 localDoc[timeKey]['pty']["rate"] = (() => {
@@ -188,7 +201,25 @@ const get1hourlyDoc = async(event, map_info,  localDoc) => new Promise((resolve,
                     't' : commonUtil.convertYMDHtoDate(yyyymmdd, hour).getTime(),
                     'r' : localDoc[timeKey]['pty']["rate"]
                 }, LOCAL_HISTORY_LENGTH);
+
+                // 강수 확률 
+                if ( !( 'pop_' + hourlyStats[timeKey]['pty_d']['e_pop'] in localDoc[timeKey])) {
+                    localDoc[timeKey]['pop_' + hourlyStats[timeKey]['pty_d']['e_pop']] =  { 'raw':[], 'history' : [], 'rate' : 0 };
+                }
+                localDoc[timeKey]['pop_' + hourlyStats[timeKey]['pty_d']['e_pop']]["raw"] = commonUtil.addItemByTime(localDoc[timeKey]['pop_' + hourlyStats[timeKey]['pty_d']['e_pop']]["raw"], {
+                    't' : commonUtil.convertYMDHtoDate(yyyymmdd, hour).getTime(),
+                    'f' : hourlyStats[timeKey]['pty_d']['a'].some(c => c !== '0')
+                }, LOCAL_HISTORY_LENGTH);
+                localDoc[timeKey]['pop_' + hourlyStats[timeKey]['pty_d']['e_pop']]["rate"] = (() => {
+                    return localDoc[timeKey]['pop_' + hourlyStats[timeKey]['pty_d']['e_pop']]["raw"].filter( obj=> obj.f).length / localDoc[timeKey]['pop_' + hourlyStats[timeKey]['pty_d']['e_pop']]["raw"].length;
+                })();
+                
+                localDoc[timeKey]['pop_' + hourlyStats[timeKey]['pty_d']['e_pop']]["history"] = commonUtil.addItemByTime(localDoc[timeKey]['pop_' + hourlyStats[timeKey]['pty_d']['e_pop']]["history"], {
+                    't' : commonUtil.convertYMDHtoDate(yyyymmdd, hour).getTime(),
+                    'r' : localDoc[timeKey]['pop_' + hourlyStats[timeKey]['pty_d']['e_pop']]["rate"]
+                }, LOCAL_HISTORY_LENGTH);
             }
+
 
             if('reh' in hourlyStats[timeKey] && 'reh_d' in hourlyStats[timeKey]) {
                 const tmpObj = {
@@ -200,7 +231,7 @@ const get1hourlyDoc = async(event, map_info,  localDoc) => new Promise((resolve,
                 localDoc[timeKey]['reh']['raw'] = commonUtil.addItemByTime(localDoc[timeKey]['reh']['raw'], tmpObj, LOCAL_HISTORY_LENGTH);
 
                 localDoc[timeKey]['reh']["avg"] = (() => {
-                    return (localDoc[timeKey]['reh']['raw'].reduce((a, b) => a + (Math.abs(b.d) || 0), 0) / localDoc[timeKey]['reh']['raw'].length).toFixed(2);
+                    return (localDoc[timeKey]['reh']['raw'].reduce((a, b) => a + (Math.abs(+b.d) || 0), 0) / localDoc[timeKey]['reh']['raw'].length).toFixed(2);
                 })();
                 localDoc[timeKey]['reh']['history'] = commonUtil.addItemByTime(localDoc[timeKey]['reh']['history'], {
                     't' : commonUtil.convertYMDHtoDate(yyyymmdd, hour).getTime(),
@@ -218,7 +249,7 @@ const get1hourlyDoc = async(event, map_info,  localDoc) => new Promise((resolve,
                 localDoc[timeKey]['vec']['raw'] = commonUtil.addItemByTime(localDoc[timeKey]['vec']['raw'], tmpObj, LOCAL_HISTORY_LENGTH);
 
                 localDoc[timeKey]['vec']["avg"] = (() => {
-                    return (localDoc[timeKey]['vec']['raw'].reduce((a, b) => a + (b.d || 0), 0) / localDoc[timeKey]['vec']['raw'].length).toFixed(2);
+                    return (localDoc[timeKey]['vec']['raw'].reduce((a, b) => a + (+b.d || 0), 0) / localDoc[timeKey]['vec']['raw'].length).toFixed(2);
                 })();
                 localDoc[timeKey]['vec']['history'] = commonUtil.addItemByTime(localDoc[timeKey]['vec']['history'], {
                     't' : commonUtil.convertYMDHtoDate(yyyymmdd, hour).getTime(),
@@ -236,7 +267,7 @@ const get1hourlyDoc = async(event, map_info,  localDoc) => new Promise((resolve,
                 localDoc[timeKey]['t1h']['raw'] = commonUtil.addItemByTime(localDoc[timeKey]['t1h']['raw'], tmpObj, LOCAL_HISTORY_LENGTH);
                 
                 localDoc[timeKey]['t1h']["avg"] = (() => {
-                    return (localDoc[timeKey]['t1h']['raw'].reduce((a, b) => a + (Math.abs(b.d) || 0), 0) / localDoc[timeKey]['t1h']['raw'].length).toFixed(2);
+                    return (localDoc[timeKey]['t1h']['raw'].reduce((a, b) => a + (Math.abs(+b.d) || 0), 0) / localDoc[timeKey]['t1h']['raw'].length).toFixed(2);
                 })();
                 localDoc[timeKey]['t1h']['history'] = commonUtil.addItemByTime(localDoc[timeKey]['t1h']['history'], {
                     't' : commonUtil.convertYMDHtoDate(yyyymmdd, hour).getTime(),
@@ -256,7 +287,7 @@ const get1hourlyDoc = async(event, map_info,  localDoc) => new Promise((resolve,
                     localDoc[timeKey]['rn1']['raw'] = commonUtil.addItemByTime(localDoc[timeKey]['rn1']['raw'], tmpObj, LOCAL_HISTORY_LENGTH);
 
                     localDoc[timeKey]['rn1']["avg"] = (() => {
-                        return (localDoc[timeKey]['rn1']['raw'].reduce((a, b) => a + (Math.abs(b.d) || 0), 0) / localDoc[timeKey]['rn1']['raw'].length).toFixed(2);
+                        return (localDoc[timeKey]['rn1']['raw'].reduce((a, b) => a + (Math.abs(+b.d) || 0), 0) / localDoc[timeKey]['rn1']['raw'].length).toFixed(2);
                     })();
                     localDoc[timeKey]['rn1']['history'] = commonUtil.addItemByTime(localDoc[timeKey]['rn1']['history'], {
                         't' : commonUtil.convertYMDHtoDate(yyyymmdd, hour).getTime(),
@@ -274,7 +305,7 @@ const get1hourlyDoc = async(event, map_info,  localDoc) => new Promise((resolve,
                 localDoc[timeKey]['wsd']['raw'] = commonUtil.addItemByTime(localDoc[timeKey]['wsd']['raw'], tmpObj, LOCAL_HISTORY_LENGTH);
 
                 localDoc[timeKey]['wsd']["avg"] = (() => {
-                    return (localDoc[timeKey]['wsd']['raw'].reduce((a, b) => a + (Math.abs(b.d) || 0), 0) / localDoc[timeKey]['wsd']['raw'].length).toFixed(2);
+                    return (localDoc[timeKey]['wsd']['raw'].reduce((a, b) => a + (Math.abs(+b.d) || 0), 0) / localDoc[timeKey]['wsd']['raw'].length).toFixed(2);
                 })();
                 localDoc[timeKey]['wsd']['history'] = commonUtil.addItemByTime(localDoc[timeKey]['wsd']['history'], {
                     't' : commonUtil.convertYMDHtoDate(yyyymmdd, hour).getTime(),
@@ -289,13 +320,29 @@ const get1hourlyDoc = async(event, map_info,  localDoc) => new Promise((resolve,
             if( 'wsd' in hourlyStats[timeKey] && 'wsd_d' in hourlyStats[timeKey] &&
                 't1h' in hourlyStats[timeKey] && 't1h_d' in hourlyStats[timeKey]) {
 
+                let actualT1h = 0;
+                let actualT1hDiff = 0;
+                hourlyStats[timeKey]['t1h_d']['a'].forEach( t1h=> {
+                    if( actualT1hDiff <= Math.abs(hourlyStats[timeKey]['t1h_d']['e'] - t1h)) {
+                        actualT1h = t1h;
+                    }
+                });
+
+                let actualWsd = 0;
+                let actualWsdDiff = 0;
+                hourlyStats[timeKey]['wsd_d']['a'].forEach( wsd=> {
+                    if( actualWsdDiff <= Math.abs(hourlyStats[timeKey]['wsd_d']['e'] - wsd)) {
+                        actualWsd = wsd;
+                    }
+                });
+
                 const eTemp = getSensTemp_w(hourlyStats[timeKey]['t1h_d']['e'],hourlyStats[timeKey]['wsd_d']['e']).toFixed(2);
-                const aTemp = getSensTemp_w(hourlyStats[timeKey]['t1h_d']['a'],hourlyStats[timeKey]['wsd_d']['a']).toFixed(2);
+                const aTemp = getSensTemp_w(actualT1h,actualWsd).toFixed(2);
                 const tmpObj = {
                     't' : commonUtil.convertYMDHtoDate(yyyymmdd, hour).getTime(),
                     'e' : eTemp,
                     'a' : aTemp,
-                    'd': aTemp - eTemp,
+                    'd': (aTemp - eTemp).toFixed(2),
                 };
                 localDoc[timeKey]['stmp_w']['raw'] = commonUtil.addItemByTime(localDoc[timeKey]['stmp_w']['raw'], tmpObj, LOCAL_HISTORY_LENGTH);
                 
@@ -320,14 +367,30 @@ const get1hourlyDoc = async(event, map_info,  localDoc) => new Promise((resolve,
             // 체감 온도 (6,7,8,9 월용)
             if( 'reh' in hourlyStats[timeKey] && 'reh_d' in hourlyStats[timeKey] &&
                 't1h' in hourlyStats[timeKey] && 't1h_d' in hourlyStats[timeKey]) {
+                
+                let actualT1h = 0;
+                let actualT1hDiff = 0;
+                hourlyStats[timeKey]['t1h_d']['a'].forEach( t1h=> {
+                    if( actualT1hDiff <= Math.abs(hourlyStats[timeKey]['t1h_d']['e'] - t1h)) {
+                        actualT1h = t1h;
+                    }
+                });
+
+                let actualReh = 0;
+                let actualRehDiff = 0;
+                hourlyStats[timeKey]['reh_d']['a'].forEach( reh=> {
+                    if( actualRehDiff <= Math.abs(hourlyStats[timeKey]['reh_d']['e'] - reh)) {
+                        actualReh = reh;
+                    }
+                });
 
                 const eTemp = getSensTemp_s(hourlyStats[timeKey]['t1h_d']['e'],hourlyStats[timeKey]['reh_d']['e']).toFixed(2);
-                const aTemp = getSensTemp_s(hourlyStats[timeKey]['t1h_d']['a'],hourlyStats[timeKey]['reh_d']['a']).toFixed(2);
+                const aTemp = getSensTemp_s(actualT1h,actualReh).toFixed(2);
                 const tmpObj = {
                     't' : commonUtil.convertYMDHtoDate(yyyymmdd, hour).getTime(),
                     'e' : eTemp,
                     'a' : aTemp,
-                    'd': aTemp - eTemp,
+                    'd': (aTemp - eTemp).toFixed(2),
                 };
                 localDoc[timeKey]['stmp_s']['raw'] = commonUtil.addItemByTime(localDoc[timeKey]['stmp_s']['raw'], tmpObj, LOCAL_HISTORY_LENGTH);
                 
@@ -347,6 +410,7 @@ const get1hourlyDoc = async(event, map_info,  localDoc) => new Promise((resolve,
 
 const importData = (tableName, docs) => new Promise((resolve, reject) => {
     commonUtil.importData( tableName, docs).then( count => {
+        //console.log("upload ", count, " docs");
         resolve(count);
         //callback(null, response("upload " + count + " docs"));
     }).catch(err => {

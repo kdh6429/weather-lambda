@@ -63,7 +63,6 @@ module.exports.getDocs  = async(event, map_info) => new Promise((resolve, reject
         commonUtil.getYMDandHour( commonUtil.getDate(event, -2)),
         commonUtil.getYMDandHour( commonUtil.getDate(event, -3)),
     ];
-    console.log( "curWeatherKeys", curWeatherKeys);
     const curWeatherPromises = curWeatherKeys.map( tmpYMDH => {
         return commonUtil.getData("ultraSrtNcst", tmpYMDH.yyyymmdd + "." + tmpYMDH.hour + "00." + map_info.x + "." + map_info.y);
     });
@@ -76,7 +75,6 @@ module.exports.getDocs  = async(event, map_info) => new Promise((resolve, reject
         const curWeathers = rtnDatas.map(rtnData => {
             return commonUtil.removeMissValue(rtnData.Item)
         }).filter(c=>c);
-        console.log( "curWeathers", curWeathers);
         const getDocsPromises = dateTimes.map(dateTime => {
             const key = dateTime.yyyymmdd + "." + dateTime.hour + "00." + yyyymmdd + "." + hour + "00." + map_info.x + "." + map_info.y;
             return commonUtil.getData("vilageFcst", key);

@@ -78,6 +78,42 @@ functions:
     timeout: 600
     events:
       - schedule: 
-          rate: cron(1 0,3,6,9,12,15,18,21 * * ? *) 
+          rate: cron(1 1,4,7,10,11,16,19,22 * * ? *) 
+          #timezone: Asia/Seoul 
+          enabled: true
+
+  gen24HourStats:
+    handler: weatherStats.gen24HourStats
+    timeout: 600
+    events:
+      - schedule: 
+          rate: cron(5 15 * * ? *) 
+          #timezone: Asia/Seoul 
+          enabled: true
+
+  setOutput:
+    handler: weatherStats_output.output
+    timeout: 120
+    events:
+      - schedule: 
+          rate: cron(3 * * * ? *) 
+          #timezone: Asia/Seoul 
+          enabled: true
+
+  setOutput_3hours:
+    handler: weatherStats_output_3hours.output
+    timeout: 120
+    events:
+      - schedule: 
+          rate: cron(5 1,4,7,10,11,16,19,22 * * ? *) 
+          #timezone: Asia/Seoul 
+          enabled: true
+
+  setOutput_24hours:
+    handler: weatherStats_output_24hours.output
+    timeout: 120
+    events:
+      - schedule: 
+          rate: cron(7 15 * * ? *) 
           #timezone: Asia/Seoul 
           enabled: true

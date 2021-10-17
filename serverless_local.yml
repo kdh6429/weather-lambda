@@ -81,3 +81,47 @@ functions:
           path: gen3HourStats
           method: get
           cors: true
+
+  gen24HourStats:
+    handler: weatherStats.gen24HourStats
+    timeout: 600
+    events:
+      - http:
+          path: gen24HourStats
+          method: get
+          cors: true
+          
+  setOutput:
+    handler: weatherStats_output.output
+    timeout: 600
+    events:
+      - http:
+          path: setOutput
+          method: get
+          cors: true
+
+  setOutput_3hours:
+    handler: weatherStats_output_3hours.output
+    timeout: 600
+    events:
+      - http:
+          path: setOutput_3hours
+          method: get
+          cors: true
+
+  setOutput_24hours:
+    handler: weatherStats_output_24hours.output
+    timeout: 600
+    events:
+      - http:
+          path: setOutput_24hours
+          method: get
+          cors: true
+  test:
+    handler: weatherStats_output.test
+    timeout: 600
+    events:
+      - http:
+          path: test
+          method: get
+          cors: true

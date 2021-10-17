@@ -30,12 +30,9 @@ module.exports.gen1HourStats = (event, context, callback) => {
     const {yyyymmdd, hour} = commonUtil.getDateTime(event);
     const statsDocsPromises = config.map_infos.map( (map_info, index) => new Promise((resolve, reject) => {
         try {
-            console.log( "map_info", map_info);
             delay(index * 2000).then(() => {
                 weatherStatsUltra.getDocs(event, map_info).then(doc => {
-                    console.log( "created doc", doc);
                     doc["id"] = "1hourly-" + yyyymmdd + "." + hour + "00." + map_info.x + "." + map_info.y;
-                    console.log( "doc", doc);
                     importData("weather-hourly-stats", [doc]).then( count => {
                         resolve(count);
                     });
@@ -48,7 +45,6 @@ module.exports.gen1HourStats = (event, context, callback) => {
     }));
     
     Promise.all(statsDocsPromises).then( result => {
-        console.log( "result", result);
         const resultCount = result.reduce((a, b)=> a+b, 0);
         
         commonUtil.sendtoSlack("weather-hourly-stats gen1HourStats : " + resultCount).then( () => {
@@ -66,9 +62,8 @@ module.exports.gen3HourStats = (event, context, callback) => {
         try {
             delay(index * 2000).then(() => {
                 weatherStatsVilage.getDocs(event, map_info).then(doc => {
-                    console.log( "created doc", doc);
                     doc["id"] = "3hourly-" + yyyymmdd + "." + hour + "00." + map_info.x + "." + map_info.y;
-                    //console.log( "doc", doc);
+                    console.log( "doc", doc);
                     importData("weather-hourly-stats", [doc]).then( count => {
                         resolve(count);
                     });
@@ -81,7 +76,6 @@ module.exports.gen3HourStats = (event, context, callback) => {
     }));
     
     Promise.all(statsDocsPromises).then( result => {
-        console.log( "result", result);
         const resultCount = result.reduce((a, b)=> a+b, 0);
         
         commonUtil.sendtoSlack("weather-hourly-stats gen3HourStats : " + resultCount).then( () => {
@@ -93,9 +87,48 @@ module.exports.gen3HourStats = (event, context, callback) => {
         callback(null, response("err" + err));
     });
 };
+
+
+module.exports.gen24HourStats = (event, context, callback) => {
+    const {yyyymmdd, hour} = commonUtil.getDateTime(event, -1);
+    const statsDocsPromises = config.map_infos.map( (map_info, index) => new Promise((resolve, reject) => {
+        try {
+            delay(index * 2000).then(() => {
+                weatherStatsMid.getLandFDocs(event, map_info).then(doc => {
+                    doc["id"] = "24hourly-" + yyyymmdd + "." + hour + "00." + map_info.x + "." + map_info.y;
+                    console.log( "doc", doc);
+                    importData("weather-hourly-stats", [doc]).then( count => {
+                        resolve(count);
+                    });
+                })
+            });
+        }
+        catch(err) {
+            reject(err);
+        }
+    }));
+    
+    Promise.all(statsDocsPromises).then( result => {
+        const resultCount = result.reduce((a, b)=> a+b, 0);
+        
+        commonUtil.sendtoSlack("weather-hourly-stats gen24HourStats : " + resultCount).then( () => {
+            callback(null, response("weather-hourly-stats gen24HourStats : " + resultCount));
+        });
+
+    }).catch(err=>{
+        console.error( "err", err);
+        callback(null, response("err" + err));
+    });
+};
+
 /*
 
 //.catch(console.error);
+
+
+// weatherStatsMid.getLandFDocs(event, map_info).then(tDoc => {
+
+
 
 // weatherStatsVilage.getDocs(event, curWeather, map_info).then(vDoc => {
 //     console.log( "created vDoc", vDoc);

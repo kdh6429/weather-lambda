@@ -4,6 +4,7 @@ const config = require('../config');
 
 AWS.config.update(config.aws_remote_config);
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
+const s3 = new AWS.S3();
 
 let Slack = require('slack-node'); 
 let webhookUri = "https://hooks.slack.com/services/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"; 
@@ -119,13 +120,16 @@ module.exports = {
             console.error("[ERROR] Failed Importing data. ", error)
         }
     }),
-    getData: (tableName, key) => new Promise((resolve, reject) => {
+    getData: (tableName, key, attr=[]) => new Promise((resolve, reject) => {
         const params = {
             TableName: tableName,
             Key : {
                 'id' : key
             }
         };
+        if (attr.length > 0) {
+            params['AttributesToGet'] = attr;
+        }
         dynamoDb.get(params, function(err, data) {
             if (err) {
                 console.log( "err", err);
@@ -155,6 +159,7 @@ module.exports = {
         });
     }),
     isEmpty(object) {
+        if (!object) return true;
         return Object.keys(object).length === 0;
     },
     convertYMDHtoDate:(YMD, hour) => {
@@ -236,16 +241,22 @@ module.exports = {
     removeMissValue:(obj) => {
         return _removeMissValue(obj)
     },
-    addHistoryByTime:(arr, item) => {
+    addItemByTime:(arr, item, LIMIT_COUNT=30) => {
         // if same item in arr
-        
+        arr = arr.filter((obj) => {
+            return obj.t !== item.t;
+        });
 
         // add item to arr
         arr.push(item);
 
         // sort by time value
-        arr.sort((a, b) => a.time - b.time);
+        arr.sort((a, b) => b.time - a.time);
 
+        // remove old data
+        if( arr.length > LIMIT_COUNT) {
+            arr = arr.splice(arr.length - LIMIT_COUNT);
+        }
         return arr;
     },
     sendtoSlack: async(message) => new Promise((resolve, reject) => {
@@ -260,5 +271,31 @@ module.exports = {
                 resolve(response);
             } 
         }); 
+    }),
+    uploadToS3: (fileName, body) => new Promise((resolve, reject) => {
+        s3.putObject({
+            Bucket: "weather-acc.co.kr",
+            Key: fileName,
+            //ACL: 'public-read',
+            Body: JSON.stringify(body),
+            ContentType: "application/json"
+           }, (err, data) => {
+           
+           err ? reject(err): resolve(data);
+        });
+    }),
+    getFromS3: (fileName) => new Promise((resolve, reject) => {
+        s3.getObject({
+            Bucket: "weather-acc.co.kr",
+            Key: fileName,
+           }, (err, data) => {
+           if( err) {
+               console.log( "getFromS3 Error", err);
+               resolve({})
+           }
+           else {
+                resolve(JSON.parse(data.Body.toString('utf-8')));
+           } 
+        });
     })
 }

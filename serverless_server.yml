@@ -24,7 +24,7 @@ plugins:
   #- serverless-local-schedule
 functions:
   vilageFcstSetBatch:
-    handler: shortWeather.vilageFcstBatch
+    handler: src/shortWeather.vilageFcstBatch
     timeout: 600
     events:
       - schedule: 
@@ -33,7 +33,7 @@ functions:
           enabled: true
 
   ultraSrtNcstBatch:
-    handler: shortWeather.ultraSrtNcstBatch
+    handler: src/shortWeather.ultraSrtNcstBatch
     events:
       - schedule: 
           rate: cron(45 * * * ? *) 
@@ -41,7 +41,7 @@ functions:
           enabled: true
 
   ultraSrtFcstBatch:
-    handler: shortWeather.ultraSrtFcstBatch
+    handler: src/shortWeather.ultraSrtFcstBatch
     events:
       - schedule: 
           rate: cron(47 * * * ? *) 
@@ -49,7 +49,7 @@ functions:
           enabled: true
 
   midTaBatch:
-    handler: shortWeather.midTaBatch
+    handler: src/shortWeather.midTaBatch
     events:
       - schedule: 
           rate: cron(10 9,21 * * ? *) # 9 -> 18, 21 -> 6
@@ -57,7 +57,7 @@ functions:
           enabled: true
 
   midLandFcstBatch:
-    handler: shortWeather.midLandFcstBatch
+    handler: src/shortWeather.midLandFcstBatch
     events:
       - schedule: 
           rate: cron(10 9,21 * * ? *) # 9 -> 18, 21 -> 6
@@ -65,7 +65,7 @@ functions:
           enabled: true
 
   gen1HourStats:
-    handler: weatherStats.gen1HourStats
+    handler: src/weatherStats.gen1HourStats
     timeout: 600
     events:
       - schedule: 
@@ -74,7 +74,7 @@ functions:
           enabled: true
 
   gen3HourStats:
-    handler: weatherStats.gen3HourStats
+    handler: src/weatherStats.gen3HourStats
     timeout: 600
     events:
       - schedule: 
@@ -83,7 +83,7 @@ functions:
           enabled: true
 
   gen24HourStats:
-    handler: weatherStats.gen24HourStats
+    handler: src/weatherStats.gen24HourStats
     timeout: 600
     events:
       - schedule: 
@@ -92,7 +92,7 @@ functions:
           enabled: true
 
   setOutput:
-    handler: weatherStats_output.output
+    handler: src/weatherStats_output.output
     timeout: 120
     events:
       - schedule: 
@@ -101,7 +101,7 @@ functions:
           enabled: true
 
   setOutput_3hours:
-    handler: weatherStats_output_3hours.output
+    handler: src/weatherStats_output_3hours.output
     timeout: 120
     events:
       - schedule: 
@@ -110,7 +110,7 @@ functions:
           enabled: true
 
   setOutput_24hours:
-    handler: weatherStats_output_24hours.output
+    handler: src/weatherStats_output_24hours.output
     timeout: 120
     events:
       - schedule: 

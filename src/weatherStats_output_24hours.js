@@ -4,6 +4,7 @@ const commonUtil = require('./module/common_util');
 const config = require('./config');
 
 const LOCAL_HISTORY_LENGTH = 30;
+const LOCAL_RAW_LENGTH = 50;
 
 const response = (message) => {
     return {
@@ -116,10 +117,22 @@ const get24hourlyTotalDoc = async(event, docs, totalDoc) => new Promise((resolve
             });
             totalDoc[timeKey][infoKey]["avg"] = (tmpSum / docs.length).toFixed(2);
             totalDoc[timeKey][infoKey]["info"] = tmpInfo;
-            totalDoc[timeKey][infoKey]['history'] = commonUtil.addItemByTime(totalDoc[timeKey][infoKey]['history'], {
-                "avg" : totalDoc[timeKey][infoKey]["avg"],
-                't' : commonUtil.convertYMDHtoDate(yyyymmdd, hour).getTime(),
-            }, LOCAL_HISTORY_LENGTH);
+            
+            let updateable = false;
+            if (totalDoc[timeKey][infoKey]["history"].lenght === 0) {
+                updateable = true;
+            }
+            else {
+                if (new Date(totalDoc[timeKey][infoKey]["history"][0].t).getDay() != new Date().getDay) {
+                    updateable = true;
+                }
+            }
+            if (updateable) {
+                totalDoc[timeKey][infoKey]['history'] = commonUtil.addItemByTime(totalDoc[timeKey][infoKey]['history'], {
+                    "avg" : totalDoc[timeKey][infoKey]["avg"],
+                    't' : commonUtil.convertYMDHtoDate(yyyymmdd, hour).getTime(),
+                }, LOCAL_HISTORY_LENGTH);
+            }
         }
 
         const infoKeys2 = [
@@ -141,6 +154,41 @@ const get24hourlyTotalDoc = async(event, docs, totalDoc) => new Promise((resolve
             if(tmpCount>0){
                 totalDoc[timeKey][infoKey]["avg"] = (tmpSum / tmpCount).toFixed(2);
                 totalDoc[timeKey][infoKey]["info"] = tmpInfo;
+            }
+
+            if (!('raw' in totalDoc[timeKey][infoKey])) {
+                totalDoc[timeKey][infoKey]['raw'] = [];
+            }
+            let tmpRaws = [];
+            docs.forEach( doc=> {
+                if ( timeKey in doc && infoKey in doc[timeKey] && doc[timeKey][infoKey]['raw']) {
+                    tmpRaws = tmpRaws.concat(doc[timeKey][infoKey]['raw']);
+                }
+            });
+            tmpRaws.sort((a, b) => b.t - a.t);
+            if( tmpRaws.length > LOCAL_RAW_LENGTH) {
+                tmpRaws = tmpRaws.splice(tmpRaws.length - LOCAL_RAW_LENGTH);
+            }
+            totalDoc[timeKey][infoKey]['raw'] = tmpRaws;
+
+            if (!('history' in totalDoc[timeKey][infoKey])) {
+                totalDoc[timeKey][infoKey]['history'] = [];
+            }
+
+            let updateable = false;
+            if (totalDoc[timeKey][infoKey]["history"].length === 0) {
+                updateable = true;
+            }
+            else {
+                if (new Date(totalDoc[timeKey][infoKey]["history"][0].t).getDay() != new Date().getDay) {
+                    updateable = true;
+                }
+            }
+            if (updateable) {
+                totalDoc[timeKey][infoKey]['history'] = commonUtil.addItemByTime(totalDoc[timeKey][infoKey]['history'], {
+                    "avg" : totalDoc[timeKey][infoKey]["avg"],
+                    't' : commonUtil.convertYMDHtoDate(yyyymmdd, hour).getTime(),
+                }, LOCAL_HISTORY_LENGTH);
             }
         }
         resolve(totalDoc);
